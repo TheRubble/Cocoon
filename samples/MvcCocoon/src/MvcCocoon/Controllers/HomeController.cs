@@ -1,9 +1,7 @@
 ﻿using System.Diagnostics;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using MvcCocoon.Models;
-using ReCode.Cocoon.Proxy.Cookies;
 using ReCode.Cocoon.Proxy.Session;
 using SharedStuff;
 
@@ -11,22 +9,21 @@ namespace MvcCocoon.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
         private readonly CocoonSession _session;
-        private readonly ICocoonCookies _cookies;
 
-        public HomeController(ILogger<HomeController> logger, CocoonSession session, ICocoonCookies cookies)
+        public HomeController(CocoonSession session)
         {
-            _logger = logger;
             _session = session;
-            _cookies = cookies;
         }
 
         [HttpGet("")]
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string id)
         {
-            await _cookies.SetAsync("Foo", "This is my cookie value");
-            _session.Set("Answer", 42);
+            // HttpContext.Session.SetString("anything","make a cookie");
+            if (!string.IsNullOrEmpty(id))
+            {
+               await _session.SetAsync("CocoonSessionShare", id);    
+            }
             return View();
         }
 

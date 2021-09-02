@@ -44,19 +44,20 @@ namespace ReCode.Cocoon.Legacy.Session
 
         private static void SetValue(HttpContextBase context, string key, string typeName)
         {
-            if (SessionValueDeserializer.GetTypeFromName(typeName, out var type)) return;
-
-            var stream = context.Request.GetBufferlessInputStream();
-
-            var length = context.Request.ContentLength;
-            byte[] bytes;
-            using (var reader = new BinaryReader(stream))
+            if (SessionValueDeserializer.GetTypeFromName(typeName, out var type))
             {
-                bytes = reader.ReadBytes(length);
-            }
+                var stream = context.Request.GetBufferlessInputStream();
 
-            var value = SessionValueDeserializer.Deserialize(type, bytes);
-            context.Session[key] = value;
+                var length = context.Request.ContentLength;
+                byte[] bytes;
+                using (var reader = new BinaryReader(stream))
+                {
+                    bytes = reader.ReadBytes(length);
+                }
+
+                var value = SessionValueDeserializer.Deserialize(type, bytes);
+                context.Session[key] = value;                
+            }
         }
 
         private static void GetValue(HttpContextBase context, string key)

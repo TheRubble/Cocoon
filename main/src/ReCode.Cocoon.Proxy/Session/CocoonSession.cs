@@ -41,6 +41,16 @@ namespace ReCode.Cocoon.Proxy.Session
         {
             EnsureCache();
             CacheValue(key, value);
+
+            WriteSessionToCocoon();
+
+        }
+
+        public async Task SetAsync<T>(string key, T value)
+        {
+            EnsureCache();
+            CacheValue(key, value);
+            await WriteSessionToCocoon();
         }
 
         private async Task<T> Get<T>(string key)
@@ -84,18 +94,24 @@ namespace ReCode.Cocoon.Proxy.Session
 
         public ValueTask DisposeAsync()
         {
+            return new ValueTask(Task.CompletedTask);
+            // return WriteSessionToCocoon();
+        }
+
+        private ValueTask WriteSessionToCocoon()
+        {
             if (_cache is null) return default;
-            
+
             if (Interlocked.Increment(ref _disposed) > 1) return default;
-            
+
             using var activity = Source.StartActivity("SaveSession");
 
             List<Task>? tasks = null;
-            
+
             foreach (var (key, value) in _cache)
             {
                 var bytes = ValueSerializer.Serialize(value);
-                
+
                 if (_original!.TryGetValue(key, out var original))
                 {
                     if (!bytes.AsSpan().SequenceEqual(original))
