@@ -10,14 +10,14 @@ namespace ReCode.Cocoon.Proxy.Session
     public class CocoonSession : IAsyncDisposable
     {
         private static readonly ActivitySource Source = new("ReCode.Cocoon.Proxy");
-        private readonly CocoonSessionClient _client;
+        private readonly ICocoonSessionClient _client;
         private readonly HttpContext _context;
         private readonly object _mutex = new();
         private Dictionary<string, byte[]>? _original;
         private Dictionary<string, object>? _cache;
         private int _disposed;
 
-        public CocoonSession(CocoonSessionClient client, IHttpContextAccessor contextAccessor)
+        public CocoonSession(ICocoonSessionClient client, IHttpContextAccessor contextAccessor)
         {
             _client = client;
             _context = contextAccessor.HttpContext;

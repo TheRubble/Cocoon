@@ -19,7 +19,7 @@ namespace Microsoft.Extensions.DependencyInjection
                 .Validate(o => o.Cookies is { Length: > 0 }
                                && Uri.TryCreate(o.BackendApiUrl, UriKind.Absolute, out _),
                     "Invalid BackendApiUrl");
-            services.AddHttpClient<CocoonSessionClient>((provider, client) =>
+            services.AddHttpClient<ICocoonSessionClient, CocoonSessionClient>((provider, client) =>
             {
                 var options = provider.GetRequiredService<IOptionsMonitor<CocoonSessionOptions>>();
                 client.BaseAddress = new Uri(options.CurrentValue.BackendApiUrl);

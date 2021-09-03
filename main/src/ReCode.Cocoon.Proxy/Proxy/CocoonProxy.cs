@@ -9,6 +9,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Yarp.ReverseProxy.Service.Proxy;
 
+
 namespace ReCode.Cocoon.Proxy.Proxy
 {
     public class CocoonProxy
@@ -17,16 +18,16 @@ namespace ReCode.Cocoon.Proxy.Proxy
         private readonly IHttpProxy _httpProxy;
         private readonly HashSet<string> _backendUrls;
         private readonly HttpMessageInvoker _httpClient;
-        private readonly RedirectTransformer _transformer;
+        private readonly HttpTransformer _transformer;
         private readonly RequestProxyOptions _requestOptions;
         private readonly string _destinationPrefix;
 
-        public CocoonProxy(IConfiguration configuration, ILogger<CocoonProxy> logger, IHttpProxy httpProxy, CocoonProxyOptions? proxyOptions)
+        public CocoonProxy(IConfiguration configuration, ILogger<CocoonProxy> logger, IHttpProxy httpProxy, HttpTransformer transformer,  CocoonProxyOptions? proxyOptions)
         {
             _httpProxy = httpProxy;
-            _destinationPrefix = configuration
-                .GetValue<string>("Cocoon:Proxy:DestinationPrefix");
-
+            _destinationPrefix = configuration.GetValue<string>("Cocoon:Proxy:DestinationPrefix");
+            _transformer = transformer;
+            
             if (string.IsNullOrEmpty(_destinationPrefix))
             {
                 throw new InvalidOperationException("No DestinationPrefix");
@@ -56,7 +57,6 @@ namespace ReCode.Cocoon.Proxy.Proxy
             }
 
             _httpClient = new HttpMessageInvoker(socketsHttpHandler);
-            _transformer = new RedirectTransformer(destinationPrefixUri);
 
             if (!TimeSpan.TryParse(configuration.GetValue<string>("Cocoon:Proxy:Timeout"), out var timeout))
             {
@@ -75,10 +75,8 @@ namespace ReCode.Cocoon.Proxy.Proxy
                 httpContext.Response.StatusCode = 404;
                 return;
             }
-
             using var activity = Source.StartActivity("Proxy");
             activity?.SetTag("path", httpContext.Request.Path.ToString());
-
             await _httpProxy.ProxyAsync(httpContext, _destinationPrefix, _httpClient, _requestOptions, _transformer);
         }
     }

@@ -7,6 +7,7 @@ namespace WingtipToys
     {
         protected void Page_Load(object sender, EventArgs e)
         {
+            var sessionId = Session.SessionID;
             var pulledFromSession = Session["CocoonSessionShare"];
             pullFromSession.Text = pulledFromSession?.ToString();
         }

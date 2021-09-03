@@ -1,7 +1,31 @@
 @page "/"
+@using ReCode.Cocoon.Proxy.Session
+@using Microsoft.AspNetCore.WebUtilities
+
+@inject CocoonSession _session;
+@inject NavigationManager _navManager;
 
 <h1>Hello, world!</h1>
-
 Welcome to your new app.
 
-<SurveyPrompt Title="How is Blazor working for you?" />
+@if (sessionSet)
+{
+    <text>Session is set : </text><span id="cocoonSessionSet">@sessionSet</span>    
+}
+
+
+@code{
+
+    protected bool sessionSet;
+    
+    protected override async Task OnInitializedAsync()
+    {
+        var uri = _navManager.ToAbsoluteUri(_navManager.Uri);
+        if (QueryHelpers.ParseQuery(uri.Query).TryGetValue("id", out var id))
+        {
+            
+            await _session.SetAsync("CocoonSessionShare", id.First());
+            sessionSet = true;
+        }
+    }
+}

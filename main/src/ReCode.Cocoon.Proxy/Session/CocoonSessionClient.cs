@@ -9,7 +9,13 @@ using Microsoft.Extensions.Options;
 
 namespace ReCode.Cocoon.Proxy.Session
 {
-    public class CocoonSessionClient
+    public interface ICocoonSessionClient
+    {
+        Task<byte[]?> GetAsync(string key, HttpRequest request);
+        Task SetAsync(string key, byte[] bytes, Type type, HttpRequest request);
+    }
+
+    public class CocoonSessionClient : ICocoonSessionClient
     {
         private readonly HttpClient _client;
         private readonly IHttpContextAccessor _httpContextAccessor;
@@ -75,8 +81,7 @@ namespace ReCode.Cocoon.Proxy.Session
             }
         }
 
-        private HttpRequestMessage CreateMessage(string key, HttpRequest request, HttpMethod httpMethod,
-            string? requestUri)
+        private HttpRequestMessage CreateMessage(string key, HttpRequest request, HttpMethod httpMethod, string? requestUri)
         {
             var message = new HttpRequestMessage(httpMethod, requestUri);
 

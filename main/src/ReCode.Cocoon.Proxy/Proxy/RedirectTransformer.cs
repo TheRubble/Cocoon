@@ -1,7 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Primitives;
+using ReCode.Cocoon.Proxy.Session;
 using Yarp.ReverseProxy.Service.Proxy;
 
 namespace ReCode.Cocoon.Proxy.Proxy
@@ -24,6 +28,7 @@ namespace ReCode.Cocoon.Proxy.Proxy
                 var relative = location.PathAndQuery;
                 response.Headers.Location = new Uri(relative, UriKind.Relative);
             }
+            
             await base.TransformResponseAsync(context, response);
         }
     }
