@@ -60,13 +60,13 @@ namespace ReCode.Cocoon.Proxy.Session
              * to server call and setting it on the client if the cookie doesn't already exist.
              */
 
-            if (setCookieHeaders != null)
+            if (setCookieHeaders != null && _httpContextAccessor.HttpContext != null)
             {
                 foreach (var setCookie in setCookieHeaders)
                 {
                     var cookieDefinition = CookieParser.Parse(setCookie);
                     _httpContextAccessor.HttpContext.Response.Cookies.Append(
-                        cookieDefinition.Name,
+                        cookieDefinition.Name, 
                         cookieDefinition.Value,
                         new CookieOptions
                         {

@@ -5,6 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.AspNetCore.Routing;
 using ReCode.Cocoon.Proxy.Authentication;
+using ReCode.Cocoon.Proxy.BlazorWasm;
 
 namespace BlazorCocoon.Server
 {
@@ -21,10 +22,10 @@ namespace BlazorCocoon.Server
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddCocoonSession();
+            services.AddBlazorWasmCocoonSession();
+            services.AddBlazorWasmCocoonProxy(Configuration);
             services.AddControllersWithViews();
             services.AddRazorPages();
-            services.AddCocoonProxy(Configuration);
             services.AddAuthentication(CocoonAuthenticationDefaults.Scheme).AddCocoon();
         }
 

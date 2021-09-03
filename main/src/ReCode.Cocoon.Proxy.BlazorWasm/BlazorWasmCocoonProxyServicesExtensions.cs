@@ -7,14 +7,14 @@ using Yarp.ReverseProxy.Service.Proxy;
 // ReSharper disable once CheckNamespace
 namespace Microsoft.Extensions.DependencyInjection
 {
-    public static class BlazorServerCocoonProxyServicesExtensions
+    public static class BlazorWasmCocoonProxyServicesExtensions
     {
-        public static IReverseProxyBuilder AddBlazorServerCocoonProxy(this IServiceCollection services, IConfiguration configuration)
+        public static IReverseProxyBuilder AddBlazorWasmCocoonProxy(this IServiceCollection services, IConfiguration configuration)
         {
-            return AddBlazorServerCocoonProxy(services, configuration, null);
+            return AddBlazorWasmCocoonProxy(services, configuration, null);
         }
 
-        public static IReverseProxyBuilder AddBlazorServerCocoonProxy(this IServiceCollection services, IConfiguration configuration, CocoonProxyOptions? cocoonProxyOptions)
+        public static IReverseProxyBuilder AddBlazorWasmCocoonProxy(this IServiceCollection services, IConfiguration configuration, CocoonProxyOptions? cocoonProxyOptions)
         {
             if (!Uri.TryCreate(configuration.GetValue<string>("Cocoon:Proxy:DestinationPrefix"), UriKind.Absolute, out var destinationPrefixUri))
             {
