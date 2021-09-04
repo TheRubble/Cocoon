@@ -32,7 +32,7 @@ else
         var uri = _navigationManager.ToAbsoluteUri(_navigationManager.Uri);
         if (QueryHelpers.ParseQuery(uri.Query).TryGetValue("id", out var id))
         {
-            var response = await _httpClient.PostAsync("http://localhost:5000/_cocoon/session", new FormUrlEncodedContent(new List<KeyValuePair<string, string>> { new("id", "CocoonSessionShare"), new("value", id) }));
+            var response = await _httpClient.PostAsync("http://localhost:5005/_cocoon/session", new FormUrlEncodedContent(new List<KeyValuePair<string, string>> { new("id", "CocoonSessionShare"), new("value", id) }));
             sessionText = response.StatusCode.ToString();
             sessionSet = true;
         }

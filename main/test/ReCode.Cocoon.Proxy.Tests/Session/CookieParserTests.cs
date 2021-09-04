@@ -6,18 +6,22 @@ namespace ReCode.Cocoon.Proxy.Tests.Session
     public class CookieParserTests
     {
 
-        [Fact]
-        public void Extracts_The_Session_Cookie()
+        [Theory]
+        [InlineData("ASP.NET_SessionId=exg0mgkt1jsk2qonnfehnydv; path=/; HttpOnly; SameSite=Lax;", 1)]
+        [InlineData("_ga=GA1.1.1351368910.1589721987;ASP.NET_SessionId=exg0mgkt1jsk2qonnfehnydv; path=/; HttpOnly; SameSite=Lax;", 2)]
+        [InlineData("ASP.NET_SessionId=exg0mgkt1jsk2qonnfehnydv; path=/; HttpOnly; SameSite=Lax;_ga=GA1.1.1351368910.1589721987; csrftoken=rLcfYUyPRDYDK884fO0t1WHuqOuHjFn3CZVJ78EHY3ml1PaBvVT4iQ5o5EMI0bxw;",3)]
+        [InlineData("ASP.NET_SessionId=exg0mgkt1jsk2qonnfehnydv; path=/; HttpOnly; SameSite=Lax;_ga=GA1.1.1351368910.1589721987; csrftoken=rLcfYUyPRDYDK884fO0t1WHuqOuHjFn3CZVJ78EHY3ml1PaBvVT4iQ5o5EMI0bxw;ASP.NET1_SessionId=exg0mgkt1jsk2qonnfehnydv; path=/; HttpOnly; SameSite=Lax;",4)]
+        public void Extracts_The_Session_Cookie(string cookie, int count)
         {
+            // Todo : Split these tests and check the result.
+            
             // Arrange
             // Act
-            var result = CookieParser.Parse("ASP.NET_SessionId=exg0mgkt1jsk2qonnfehnydv; path=/; HttpOnly; SameSite=Lax");
-            
+            // "ASP.NET_SessionId=exg0mgkt1jsk2qonnfehnydv; path=/; HttpOnly; SameSite=Lax"
+            var result = CookieParser.Parse(cookie);
+
             // Assert
-            Assert.True(result.Name == "ASP.NET_SessionId");
-            Assert.True(result.Value == "exg0mgkt1jsk2qonnfehnydv");
-            Assert.True(result.Path == "/");
-            Assert.True(result.HttpOnly == true);
+            Assert.True(result.Length == count);
         }
     }
 }

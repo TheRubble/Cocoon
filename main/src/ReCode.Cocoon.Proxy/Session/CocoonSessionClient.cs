@@ -64,15 +64,19 @@ namespace ReCode.Cocoon.Proxy.Session
             {
                 foreach (var setCookie in setCookieHeaders)
                 {
-                    var cookieDefinition = CookieParser.Parse(setCookie);
-                    _httpContextAccessor.HttpContext.Response.Cookies.Append(
-                        cookieDefinition.Name, 
-                        cookieDefinition.Value,
-                        new CookieOptions
-                        {
-                            Path = "/",
-                            SameSite = SameSiteMode.Lax
-                        });
+                    var cookieDefinitions = CookieParser.Parse(setCookie);
+                    var cookieDefinition  = cookieDefinitions.FirstOrDefault(x => x.Name == "ASP.NET_SessionId");
+                    if (cookieDefinition != null)
+                    {
+                        _httpContextAccessor.HttpContext.Response.Cookies.Append(
+                            cookieDefinition.Name, 
+                            cookieDefinition.Value,
+                            new CookieOptions
+                            {
+                                Path = "/",
+                                SameSite = SameSiteMode.Lax
+                            });
+                    }
                 }
             }
             else

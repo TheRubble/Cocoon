@@ -16,7 +16,7 @@ namespace ReCode.Cocoon.Integration.Tests
         {
             BrowserTypeLaunchOptions = new BrowserTypeLaunchOptions
             {
-                Headless = false
+                Headless = true
             };
         }
         
